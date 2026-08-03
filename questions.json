@@ -710,7 +710,7 @@
       "answers": {
         "A": "Luwers",
         "B": "Kausza",
-        "C": "Szakla"
+        "C": "Szekla"
       },
       "correct": "C",
       "image": "images/q_55.jpg"
@@ -751,7 +751,7 @@
         "B": "Achtersztag",
         "C": "Topwanta"
       },
-      "correct": "A",
+      "correct": "B",
       "image": "images/q_58.jpg"
     },
     {
