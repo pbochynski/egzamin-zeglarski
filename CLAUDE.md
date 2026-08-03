@@ -72,6 +72,17 @@ Hosting: GitHub Pages (statyczna strona, bez backendu)
 | 406 | Teoria żeglowania | C | A | Lewy hals = wiatr z lewej burty |
 | 415 | Teoria żeglowania | B | A | Zarefowanie grota → zawietrzność |
 
+## Weryfikacja pytań
+
+Przy weryfikacji poprawności odpowiedzi:
+
+1. **Przejrzyj obrazek** (jeśli pytanie ma `image`) — odpowiedź często zależy od tego, co dokładnie jest zaznaczone kolorem czerwonym, które elementy są widoczne, po której stronie coś się znajduje itp.
+2. **Sprawdź definicje** w zewnętrznych źródłach, nie polegaj wyłącznie na własnej wiedzy:
+   - Polska Wikipedia: `https://pl.wikipedia.org/wiki/<termin>`
+   - Słownik języka polskiego: `https://sjp.pl/<termin>`
+3. **Nie akceptuj pierwszej intuicji** — jeśli użytkownik kwestionuje odpowiedź, sprawdź źródła zanim zaakceptujesz lub odrzucisz korektę.
+4. Po weryfikacji popraw `correct` w `questions.json`, scommituj i wypchnij na GitHub.
+
 ## Regeneracja questions.json
 
 Jeśli trzeba przetworzyć PDFy od nowa:
