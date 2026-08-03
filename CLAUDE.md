@@ -60,7 +60,7 @@ Hosting: GitHub Pages (statyczna strona, bez backendu)
 |----|-----------|-------|------|-------|
 | 25, 38 | Budowa jachtów | A | C | Optymist = ket, nie slup |
 | 64 | Budowa jachtów | C | A | Kipa nie jest częścią żagla |
-| 79 | Budowa jachtów | C | B | Sztormreling = uchwyt, nie drabinka |
+| 79 | Budowa jachtów | C | A | Sztormreling = barierka pokładowa, nie drabinka ani uchwyt |
 | 92 | Budowa jachtów | B | A | Ket = 1 maszt i 1 żagiel |
 | 243, 259 | Podstawy locji | B | A | Zasada mijania znaków pod prąd |
 | 272 | Podstawy locji | C | B | Polska mapa: metry, nie sążnie |
