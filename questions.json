@@ -2896,7 +2896,7 @@
         "B": "Nakaz zrzucenia żagli",
         "C": "Zakaz cumowania po prawej stronie"
       },
-      "correct": "B",
+      "correct": "A",
       "image": "images/q_223.jpg"
     },
     {
@@ -2922,7 +2922,7 @@
         "B": "Wschodnią stronę niebezpieczeństwa, minąć prawą burtą",
         "C": "Południową stronę niebezpieczeństwa, minąć w bezpiecznej odległości (sprawdzając na mapie położenie niebezpieczeństwa)"
       },
-      "correct": "B",
+      "correct": "C",
       "image": "images/q_225.jpg"
     },
     {
@@ -2948,7 +2948,7 @@
         "B": "Po wschodniej stronie pławy znajduje się niebezpieczeństwo",
         "C": "Pława oznacza małe odosobnione niebezpieczeństwo"
       },
-      "correct": "A",
+      "correct": "B",
       "image": "images/q_227.jpg"
     },
     {
@@ -2974,7 +2974,7 @@
         "B": "Nie wpływać – rezerwat ptaków",
         "C": "Lewą burtą"
       },
-      "correct": "C",
+      "correct": "A",
       "image": "images/q_229.jpg"
     },
     {
@@ -3026,7 +3026,7 @@
         "B": "Jaz, niebezpieczeństwo, może być silny prąd, upewnić się czymożna przepływać.",
         "C": "Przystań można zacumować przy nabrzeżu"
       },
-      "correct": "A",
+      "correct": "B",
       "image": "images/q_233.jpg"
     },
     {
@@ -3117,7 +3117,7 @@
         "B": "Zmienić kurs w lewo i minąć pławę (rys.1) prawą burtą, a pławę (rys. 2) lewą burtą",
         "C": "Zmienić kurs w prawo i minąć obie pławy (rys.1 i 2) lewą burtą."
       },
-      "correct": "A",
+      "correct": "C",
       "image": "images/q_240.jpg"
     },
     {
@@ -3156,7 +3156,7 @@
         "B": "Pławy lub tyki zielone ze znakiem szczytowym stożek.",
         "C": "Pławy lub tyki z wiechą"
       },
-      "correct": "A",
+      "correct": "B",
       "image": null
     },
     {
@@ -3286,7 +3286,7 @@
         "B": "Nie, dozwolone jest cumowanie tylko czterech jachtów",
         "C": "Nie, te jachty zacumowały nieprawidłowo, niedozwolone jest cumowanie burta w burtę"
       },
-      "correct": "B",
+      "correct": "A",
       "image": "images/q_253.jpg"
     },
     {
@@ -3364,7 +3364,7 @@
         "B": "Mijam ją lewą burtą",
         "C": "Mogę wyminąć po każdej stronie bo to stara pława nie obowiązująca obecnie."
       },
-      "correct": "A",
+      "correct": "B",
       "image": null
     },
     {
@@ -3390,7 +3390,7 @@
         "B": "Zakaz ruchu statków o mocy silnika (KM) podanej na znaku",
         "C": "Nakaz nie przekraczania prędkości 12 km/h, dostosować szybkość"
       },
-      "correct": "A",
+      "correct": "C",
       "image": "images/q_261.jpg"
     },
     {
@@ -3403,7 +3403,7 @@
         "B": "Zakaz ruchu statków żaglowych",
         "C": "Nakaz nadania sygnału dźwiękowego."
       },
-      "correct": "C",
+      "correct": "A",
       "image": "images/q_262.jpg"
     },
     {
@@ -3455,7 +3455,7 @@
         "B": "Przebieg szlaku wzdłuż prawego brzegu",
         "C": "Miejsce niebezpieczne na lewym brzegu"
       },
-      "correct": "A",
+      "correct": "B",
       "image": "images/q_266.jpg"
     },
     {
@@ -3468,7 +3468,7 @@
         "B": "Miejsce niebezpieczne na prawym brzegu",
         "C": "Przebieg szlaku wzdłuż lewego brzegu"
       },
-      "correct": "A",
+      "correct": "C",
       "image": "images/q_267.jpg"
     },
     {
@@ -3546,7 +3546,7 @@
         "B": "Lewą stronę szlaku żeglownego, minąć lewą burtą",
         "C": "Lewą stronę szlaku żeglownego, minąć prawą burtą"
       },
-      "correct": "C",
+      "correct": "B",
       "image": null
     },
     {
@@ -3572,7 +3572,7 @@
         "B": "Lewą burtą",
         "C": "Można minąć z obu stron nie za blisko"
       },
-      "correct": "C",
+      "correct": "A",
       "image": "images/q_275.jpg"
     },
     {
