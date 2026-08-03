@@ -1,0 +1,951 @@
+<!DOCTYPE html>
+<html lang="pl">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Egzamin Żeglarski</title>
+  <style>
+    /* ── CSS custom properties ── */
+    :root {
+      --bg: #f0f4f8;
+      --bg-card: #ffffff;
+      --text: #1a1a2e;
+      --text-muted: #5a6070;
+      --accent: #1565c0;
+      --accent-light: #e3f0ff;
+      --correct: #2e7d32;
+      --correct-light: #e8f5e9;
+      --incorrect: #c62828;
+      --incorrect-light: #ffebee;
+      --neutral: #37474f;
+      --neutral-light: #eceff1;
+      --border: #d0d7de;
+      --shadow: 0 2px 8px rgba(0,0,0,0.08);
+    }
+    body.dark {
+      --bg: #0d1117;
+      --bg-card: #161b22;
+      --text: #e6edf3;
+      --text-muted: #8b949e;
+      --accent: #58a6ff;
+      --accent-light: #1c2c45;
+      --correct: #56d364;
+      --correct-light: #1a3326;
+      --incorrect: #f85149;
+      --incorrect-light: #3d1a1a;
+      --neutral: #8b949e;
+      --neutral-light: #21262d;
+      --border: #30363d;
+      --shadow: 0 2px 8px rgba(0,0,0,0.4);
+    }
+
+    /* ── Reset & base ── */
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+    body {
+      font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+      background: var(--bg);
+      color: var(--text);
+      min-height: 100vh;
+      line-height: 1.5;
+    }
+    .container {
+      max-width: 640px;
+      margin: 0 auto;
+      padding: 1rem;
+    }
+
+    /* ── Screen switching ── */
+    .screen { display: none; }
+    .screen.active { display: block; }
+
+    /* ── Cards ── */
+    .card {
+      background: var(--bg-card);
+      border: 1px solid var(--border);
+      border-radius: 12px;
+      padding: 1.5rem;
+      box-shadow: var(--shadow);
+    }
+
+    /* ── Typography ── */
+    h1 { font-size: 1.6rem; font-weight: 700; margin-bottom: 0.25rem; }
+    h2 { font-size: 1.3rem; font-weight: 600; margin-bottom: 1rem; }
+    h3 { font-size: 1.1rem; font-weight: 600; margin-bottom: 0.5rem; }
+    p { margin-bottom: 0.75rem; }
+
+    /* ── Buttons ── */
+    .btn {
+      display: inline-block;
+      padding: 0.75rem 1.5rem;
+      border: none;
+      border-radius: 8px;
+      font-size: 1rem;
+      font-weight: 500;
+      cursor: pointer;
+      transition: opacity 0.15s, transform 0.1s;
+      text-align: center;
+    }
+    .btn:active { transform: scale(0.98); }
+    .btn-primary { background: var(--accent); color: #fff; }
+    .btn-primary:hover { opacity: 0.9; }
+    .btn-secondary {
+      background: var(--neutral-light);
+      color: var(--text);
+      border: 1px solid var(--border);
+    }
+    .btn-secondary:hover { opacity: 0.85; }
+    .btn-block { display: block; width: 100%; margin-bottom: 0.75rem; }
+
+    /* ── Form elements ── */
+    label { display: block; margin-bottom: 0.5rem; color: var(--text-muted); font-size: 0.9rem; }
+    input[type="number"],
+    select {
+      width: 100%;
+      padding: 0.6rem 0.75rem;
+      border: 1px solid var(--border);
+      border-radius: 8px;
+      background: var(--bg-card);
+      color: var(--text);
+      font-size: 1rem;
+      margin-bottom: 1rem;
+    }
+    input[type="number"]:focus,
+    select:focus { outline: 2px solid var(--accent); border-color: transparent; }
+
+    .form-group { margin-bottom: 1rem; }
+
+    /* Radio group */
+    .radio-group { display: flex; gap: 1rem; flex-wrap: wrap; margin-bottom: 1rem; }
+    .radio-label {
+      display: flex;
+      align-items: center;
+      gap: 0.4rem;
+      cursor: pointer;
+      color: var(--text);
+      font-size: 1rem;
+    }
+
+    /* Toggle (dark mode) */
+    .toggle-row {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      padding: 0.75rem 0;
+    }
+    .toggle-switch {
+      position: relative;
+      width: 44px;
+      height: 24px;
+    }
+    .toggle-switch input { opacity: 0; width: 0; height: 0; }
+    .toggle-slider {
+      position: absolute;
+      inset: 0;
+      background: var(--border);
+      border-radius: 24px;
+      cursor: pointer;
+      transition: background 0.2s;
+    }
+    .toggle-slider::before {
+      content: "";
+      position: absolute;
+      width: 18px; height: 18px;
+      left: 3px; top: 3px;
+      background: #fff;
+      border-radius: 50%;
+      transition: transform 0.2s;
+    }
+    .toggle-switch input:checked + .toggle-slider { background: var(--accent); }
+    .toggle-switch input:checked + .toggle-slider::before { transform: translateX(20px); }
+
+    /* ── Home screen ── */
+    #screen-home .header {
+      text-align: center;
+      padding: 2rem 0 1.5rem;
+    }
+    #screen-home .subtitle {
+      color: var(--text-muted);
+      margin-bottom: 2rem;
+      text-align: center;
+    }
+    .stats-bar {
+      display: flex;
+      justify-content: center;
+      gap: 2rem;
+      margin-bottom: 2rem;
+      color: var(--text-muted);
+      font-size: 0.875rem;
+    }
+    .stats-bar strong { color: var(--text); font-size: 1.1rem; display: block; }
+
+    /* ── Progress bar ── */
+    .progress-container {
+      background: var(--border);
+      border-radius: 4px;
+      height: 6px;
+      margin-bottom: 0.5rem;
+    }
+    #progress-bar {
+      height: 100%;
+      background: var(--accent);
+      border-radius: 4px;
+      transition: width 0.3s ease;
+    }
+    .progress-text {
+      font-size: 0.875rem;
+      color: var(--text-muted);
+      margin-bottom: 1.25rem;
+    }
+
+    /* ── Question screen ── */
+    #question-image-container { display: none; margin-bottom: 1rem; }
+    #question-image-container.visible { display: block; }
+    #question-image {
+      width: 100%;
+      border-radius: 8px;
+      border: 1px solid var(--border);
+      cursor: zoom-in;
+      background: var(--neutral-light);
+      min-height: 60px;
+    }
+    #question-image::before {
+      content: "Ładowanie rysunku...";
+      display: block;
+      text-align: center;
+      color: var(--text-muted);
+      padding: 1rem;
+    }
+    .question-orig-number {
+      font-size: 0.75rem;
+      color: var(--text-muted);
+      margin-bottom: 0.5rem;
+    }
+
+    /* Image modal */
+    #img-modal {
+      display: none;
+      position: fixed;
+      inset: 0;
+      background: rgba(0,0,0,0.85);
+      z-index: 1000;
+      align-items: center;
+      justify-content: center;
+      cursor: zoom-out;
+    }
+    #img-modal.open { display: flex; }
+    #img-modal img {
+      max-width: 95vw;
+      max-height: 95vh;
+      object-fit: contain;
+      border-radius: 4px;
+    }
+
+    #question-text {
+      font-size: 1.05rem;
+      font-weight: 500;
+      margin-bottom: 1.25rem;
+      line-height: 1.6;
+    }
+
+    /* Answer buttons */
+    .answer-btn {
+      display: block;
+      width: 100%;
+      padding: 0.85rem 1rem;
+      margin-bottom: 0.6rem;
+      border: 2px solid var(--border);
+      border-radius: 10px;
+      background: var(--bg-card);
+      color: var(--text);
+      font-size: 0.95rem;
+      text-align: left;
+      cursor: pointer;
+      transition: border-color 0.15s, background 0.15s;
+      line-height: 1.4;
+    }
+    .answer-btn:hover:not(:disabled) {
+      border-color: var(--accent);
+      background: var(--accent-light);
+    }
+    .answer-btn:disabled { cursor: default; }
+    .answer-btn.correct {
+      border-color: var(--correct);
+      background: var(--correct-light);
+      color: var(--correct);
+      font-weight: 500;
+    }
+    .answer-btn.incorrect {
+      border-color: var(--incorrect);
+      background: var(--incorrect-light);
+      color: var(--incorrect);
+    }
+    .answer-btn.selected-neutral {
+      border-color: var(--neutral);
+      background: var(--neutral-light);
+    }
+    .answer-btn.reveal-correct {
+      border-color: var(--correct);
+      background: var(--correct-light);
+      color: var(--correct);
+      font-weight: 500;
+    }
+
+    #btn-next-question {
+      display: none;
+      margin-top: 1rem;
+    }
+
+    /* ── Results screen ── */
+    .score-circle {
+      text-align: center;
+      padding: 1.5rem;
+      margin-bottom: 1.5rem;
+    }
+    .score-number {
+      font-size: 3rem;
+      font-weight: 700;
+      line-height: 1;
+    }
+    .score-label { color: var(--text-muted); margin-top: 0.25rem; }
+    .score-pass { color: var(--correct); }
+    .score-fail { color: var(--incorrect); }
+    .verdict {
+      display: inline-block;
+      padding: 0.4rem 1rem;
+      border-radius: 20px;
+      font-weight: 600;
+      font-size: 0.95rem;
+      margin-top: 0.5rem;
+    }
+    .verdict.pass { background: var(--correct-light); color: var(--correct); }
+    .verdict.fail { background: var(--incorrect-light); color: var(--incorrect); }
+
+    .wrong-answers-section h3 { margin-bottom: 1rem; }
+    .wrong-item {
+      border: 1px solid var(--border);
+      border-radius: 10px;
+      padding: 1rem;
+      margin-bottom: 0.75rem;
+      background: var(--bg-card);
+    }
+    .wrong-item .item-question { font-weight: 500; margin-bottom: 0.5rem; }
+    .wrong-item .item-thumb {
+      width: 100%;
+      max-height: 180px;
+      object-fit: contain;
+      border-radius: 6px;
+      margin-bottom: 0.5rem;
+    }
+    .wrong-item .your-answer { color: var(--incorrect); font-size: 0.9rem; margin-bottom: 0.25rem; }
+    .wrong-item .right-answer { color: var(--correct); font-size: 0.9rem; font-weight: 500; }
+    .results-actions { display: flex; gap: 0.75rem; flex-wrap: wrap; margin-top: 1.5rem; }
+    .results-actions .btn { flex: 1; min-width: 140px; }
+
+    /* ── Study screen ── */
+    .category-tabs {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 0.4rem;
+      margin-bottom: 1.25rem;
+    }
+    .tab-btn {
+      padding: 0.4rem 0.75rem;
+      border: 1px solid var(--border);
+      border-radius: 20px;
+      background: var(--bg-card);
+      color: var(--text-muted);
+      font-size: 0.85rem;
+      cursor: pointer;
+      transition: all 0.15s;
+    }
+    .tab-btn:hover { border-color: var(--accent); color: var(--accent); }
+    .tab-btn.active {
+      background: var(--accent);
+      border-color: var(--accent);
+      color: #fff;
+    }
+
+    .study-card {
+      border: 1px solid var(--border);
+      border-radius: 10px;
+      padding: 1rem;
+      margin-bottom: 0.75rem;
+      background: var(--bg-card);
+    }
+    .study-card .study-img {
+      width: 100%;
+      max-height: 240px;
+      object-fit: contain;
+      border-radius: 6px;
+      margin-bottom: 0.75rem;
+    }
+    .study-card .q-text { font-weight: 500; margin-bottom: 0.6rem; }
+    .study-card ul { list-style: none; padding: 0; }
+    .study-card li {
+      padding: 0.4rem 0.6rem;
+      border-radius: 6px;
+      font-size: 0.9rem;
+      margin-bottom: 0.25rem;
+    }
+    .study-card li.is-correct {
+      background: var(--correct-light);
+      color: var(--correct);
+      font-weight: 600;
+    }
+    .study-card .q-num {
+      font-size: 0.75rem;
+      color: var(--text-muted);
+      margin-bottom: 0.25rem;
+    }
+
+    /* ── Loading screen ── */
+    #screen-loading.active {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      min-height: 80vh;
+      text-align: center;
+    }
+    .loading-content { color: var(--text-muted); }
+    .spinner {
+      width: 40px; height: 40px;
+      border: 3px solid var(--border);
+      border-top-color: var(--accent);
+      border-radius: 50%;
+      animation: spin 0.8s linear infinite;
+      margin: 0 auto 1rem;
+    }
+    @keyframes spin { to { transform: rotate(360deg); } }
+
+    /* ── Utility ── */
+    .mt-1 { margin-top: 0.75rem; }
+    .text-muted { color: var(--text-muted); font-size: 0.875rem; }
+    .divider { border: none; border-top: 1px solid var(--border); margin: 1.25rem 0; }
+  </style>
+</head>
+<body>
+
+<!-- Loading -->
+<div id="screen-loading" class="screen active">
+  <div class="loading-content">
+    <div class="spinner"></div>
+    <p>Ładowanie pytań...</p>
+  </div>
+</div>
+
+<!-- Home -->
+<div id="screen-home" class="screen">
+  <div class="container">
+    <div class="header">
+      <h1>⚓ Egzamin Żeglarski</h1>
+      <p class="subtitle">Przygotowanie do patentu żeglarza jachtowego</p>
+      <div id="home-stats" class="stats-bar"></div>
+    </div>
+
+    <div class="card">
+      <button class="btn btn-primary btn-block" id="btn-go-exam-config">Tryb egzaminu</button>
+      <button class="btn btn-secondary btn-block" id="btn-go-study">Tryb nauki</button>
+      <hr class="divider">
+      <div class="toggle-row">
+        <span>Ciemny motyw</span>
+        <label class="toggle-switch">
+          <input type="checkbox" id="toggle-dark">
+          <span class="toggle-slider"></span>
+        </label>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- Exam config -->
+<div id="screen-exam-config" class="screen">
+  <div class="container">
+    <h2>Konfiguracja egzaminu</h2>
+    <div class="card">
+      <div class="form-group">
+        <label for="config-count">Liczba pytań</label>
+        <input type="number" id="config-count" value="30" min="5" max="200">
+      </div>
+
+      <div class="form-group">
+        <label for="config-category">Kategoria</label>
+        <select id="config-category">
+          <option value="all">Wszystkie kategorie</option>
+        </select>
+      </div>
+
+      <div class="form-group">
+        <label>Feedback</label>
+        <div class="radio-group">
+          <label class="radio-label">
+            <input type="radio" name="feedback-mode" value="immediate" checked>
+            Natychmiastowy
+          </label>
+          <label class="radio-label">
+            <input type="radio" name="feedback-mode" value="end">
+            Na końcu
+          </label>
+        </div>
+      </div>
+
+      <button class="btn btn-primary btn-block" id="btn-start-exam">Rozpocznij egzamin</button>
+      <button class="btn btn-secondary btn-block" id="btn-back-from-config">Powrót</button>
+    </div>
+  </div>
+</div>
+
+<!-- Question -->
+<div id="screen-question" class="screen">
+  <div class="container">
+    <div class="progress-container">
+      <div id="progress-bar" style="width: 0%"></div>
+    </div>
+    <p class="progress-text" id="progress-text">Pytanie 1 z 30</p>
+
+    <div class="card">
+      <p id="question-orig-number" class="question-orig-number"></p>
+      <div id="question-image-container">
+        <img id="question-image" src="" alt="Ilustracja do pytania">
+        <p class="img-hint">Kliknij aby powiększyć</p>
+      </div>
+
+      <p id="question-text"></p>
+
+      <div id="answers-container">
+        <button class="answer-btn" data-key="A"></button>
+        <button class="answer-btn" data-key="B"></button>
+        <button class="answer-btn" data-key="C"></button>
+      </div>
+
+      <button class="btn btn-primary btn-block" id="btn-next-question">Następne pytanie →</button>
+    </div>
+  </div>
+</div>
+
+<!-- Results -->
+<div id="screen-results" class="screen">
+  <div class="container">
+    <h2>Wyniki egzaminu</h2>
+    <div class="card">
+      <div class="score-circle">
+        <div id="score-number" class="score-number"></div>
+        <p id="score-label" class="score-label"></p>
+        <span id="score-verdict" class="verdict"></span>
+      </div>
+
+      <div class="results-actions">
+        <button class="btn btn-primary" id="btn-retry-exam">Powtórz egzamin</button>
+        <button class="btn btn-secondary" id="btn-home-from-results">Menu główne</button>
+      </div>
+    </div>
+
+    <div id="wrong-answers-section" class="wrong-answers-section mt-1"></div>
+  </div>
+</div>
+
+<!-- Study -->
+<div id="screen-study" class="screen">
+  <div class="container">
+    <div style="display: flex; align-items: center; gap: 1rem; margin-bottom: 1rem;">
+      <button class="btn btn-secondary" id="btn-back-from-study" style="padding: 0.5rem 1rem;">← Powrót</button>
+      <h2 style="margin: 0;">Tryb nauki</h2>
+    </div>
+
+    <div id="study-category-tabs" class="category-tabs"></div>
+    <div id="study-questions-list"></div>
+  </div>
+</div>
+
+<div id="img-modal">
+  <img id="img-modal-img" src="" alt="Powiększona ilustracja">
+</div>
+
+<script>
+  // ── State ────────────────────────────────────────────────────────────────
+  const state = {
+    questions: [],
+    categories: [],
+    exam: {
+      questions: [],
+      currentIndex: 0,
+      answers: {},
+      feedbackMode: 'immediate',
+      answered: false,
+      config: null,
+    },
+    study: {
+      activeCategory: null,
+    },
+    prefs: {
+      darkMode: false,
+    },
+  };
+
+  // ── Screen navigation ─────────────────────────────────────────────────────
+  function showScreen(id) {
+    document.querySelectorAll('.screen').forEach(s => s.classList.remove('active'));
+    document.getElementById(`screen-${id}`).classList.add('active');
+    window.scrollTo(0, 0);
+  }
+
+  // ── Fisher-Yates shuffle ──────────────────────────────────────────────────
+  function shuffle(arr) {
+    const a = [...arr];
+    for (let i = a.length - 1; i > 0; i--) {
+      const j = Math.floor(Math.random() * (i + 1));
+      [a[i], a[j]] = [a[j], a[i]];
+    }
+    return a;
+  }
+
+  // ── Exam ──────────────────────────────────────────────────────────────────
+  function startExam() {
+    const count = parseInt(document.getElementById('config-count').value, 10);
+    const category = document.getElementById('config-category').value;
+    const feedbackMode = document.querySelector('input[name="feedback-mode"]:checked').value;
+
+    let pool = state.questions;
+    if (category !== 'all') {
+      pool = pool.filter(q => q.category === category);
+    }
+
+    const selected = shuffle(pool).slice(0, Math.min(count, pool.length));
+
+    if (selected.length === 0) {
+      alert('Brak pytań dla wybranej konfiguracji.');
+      return;
+    }
+
+    state.exam = {
+      questions: selected,
+      currentIndex: 0,
+      answers: {},
+      feedbackMode,
+      answered: false,
+      config: { count, category, feedbackMode },
+    };
+
+    showScreen('question');
+    renderQuestion();
+  }
+
+  function renderQuestion() {
+    const { exam } = state;
+    const q = exam.questions[exam.currentIndex];
+    exam.answered = false;
+
+    // Progress
+    const pct = (exam.currentIndex / exam.questions.length) * 100;
+    document.getElementById('progress-bar').style.width = `${pct}%`;
+    document.getElementById('progress-text').textContent =
+      `Pytanie ${exam.currentIndex + 1} z ${exam.questions.length}`;
+
+    // Orig number
+    const origNum = document.getElementById('question-orig-number');
+    origNum.textContent = q.orig_number != null
+      ? `${q.category} · pyt. ${q.orig_number}`
+      : q.category;
+
+    // Image
+    const imgContainer = document.getElementById('question-image-container');
+    const img = document.getElementById('question-image');
+    if (q.image) {
+      img.src = q.image;
+      imgContainer.classList.add('visible');
+    } else {
+      imgContainer.classList.remove('visible');
+      img.src = '';
+    }
+
+    // Question text
+    document.getElementById('question-text').textContent = q.text;
+
+    // Answer buttons — reset
+    document.querySelectorAll('.answer-btn').forEach(btn => {
+      const key = btn.dataset.key;
+      btn.textContent = `${key}.  ${q.answers[key]}`;
+      btn.className = 'answer-btn';
+      btn.disabled = false;
+    });
+
+    const nextBtn = document.getElementById('btn-next-question');
+    nextBtn.style.display = 'none';
+    nextBtn.textContent = exam.currentIndex === exam.questions.length - 1
+      ? 'Pokaż wyniki'
+      : 'Następne pytanie →';
+  }
+
+  function handleAnswerClick(selectedKey) {
+    const { exam } = state;
+    if (exam.answered) return;
+
+    const q = exam.questions[exam.currentIndex];
+    exam.answered = true;
+    exam.answers[q.id] = selectedKey;
+
+    // Disable all buttons
+    document.querySelectorAll('.answer-btn').forEach(btn => {
+      btn.disabled = true;
+    });
+
+    if (exam.feedbackMode === 'immediate') {
+      // Color: correct = green, selected-wrong = red, others = dim
+      document.querySelectorAll('.answer-btn').forEach(btn => {
+        const key = btn.dataset.key;
+        if (key === q.correct) {
+          btn.classList.add('correct');
+        } else if (key === selectedKey && selectedKey !== q.correct) {
+          btn.classList.add('incorrect');
+        }
+      });
+    } else {
+      // Just mark selected with neutral highlight
+      document.querySelectorAll('.answer-btn').forEach(btn => {
+        if (btn.dataset.key === selectedKey) btn.classList.add('selected-neutral');
+      });
+    }
+
+    document.getElementById('btn-next-question').style.display = 'block';
+  }
+
+  function nextQuestion() {
+    const { exam } = state;
+    if (exam.currentIndex < exam.questions.length - 1) {
+      exam.currentIndex++;
+      renderQuestion();
+    } else {
+      showResults();
+    }
+  }
+
+  function showResults() {
+    const { exam } = state;
+    const total = exam.questions.length;
+    const correct = exam.questions.filter(q => exam.answers[q.id] === q.correct).length;
+    const pct = Math.round((correct / total) * 100);
+    const passed = pct >= 75;
+
+    document.getElementById('score-number').textContent = `${correct}/${total}`;
+    document.getElementById('score-number').className = `score-number ${passed ? 'score-pass' : 'score-fail'}`;
+    document.getElementById('score-label').textContent = `${pct}% poprawnych odpowiedzi`;
+
+    const verdict = document.getElementById('score-verdict');
+    verdict.textContent = passed ? 'ZDANY' : 'NIEZDANY';
+    verdict.className = `verdict ${passed ? 'pass' : 'fail'}`;
+
+    // Wrong answers
+    const wrongSection = document.getElementById('wrong-answers-section');
+    const wrong = exam.questions.filter(q => exam.answers[q.id] !== q.correct);
+
+    if (wrong.length === 0) {
+      wrongSection.innerHTML = '';
+    } else {
+      wrongSection.innerHTML = `<h3>Błędne odpowiedzi (${wrong.length})</h3>` +
+        wrong.map(q => {
+          const yourKey = exam.answers[q.id];
+          const yourText = yourKey ? `${yourKey}. ${q.answers[yourKey]}` : '(brak odpowiedzi)';
+          const correctText = `${q.correct}. ${q.answers[q.correct]}`;
+          const imgHtml = q.image
+            ? `<img src="${q.image}" class="item-thumb" alt="Ilustracja">`
+            : '';
+          return `
+            <div class="wrong-item">
+              ${imgHtml}
+              <p class="question-orig-number">${escapeHtml(q.category)}${q.orig_number != null ? ' · pyt. ' + q.orig_number : ''}</p>
+              <p class="item-question">${escapeHtml(q.text)}</p>
+              <p class="your-answer">Twoja odpowiedź: ${escapeHtml(yourText)}</p>
+              <p class="right-answer">Poprawna: ${escapeHtml(correctText)}</p>
+            </div>`;
+        }).join('');
+    }
+
+    showScreen('results');
+  }
+
+  function retryExam() {
+    if (state.exam.config) {
+      // Restore config UI and re-start with same settings
+      const cfg = state.exam.config;
+      document.getElementById('config-count').value = cfg.count;
+      document.getElementById('config-category').value = cfg.category;
+      document.querySelector(`input[name="feedback-mode"][value="${cfg.feedbackMode}"]`).checked = true;
+      startExam();
+    } else {
+      showScreen('exam-config');
+    }
+  }
+
+  // ── Study mode ────────────────────────────────────────────────────────────
+  function initStudyMode() {
+    const tabs = document.getElementById('study-category-tabs');
+    tabs.innerHTML = state.categories.map(cat =>
+      `<button class="tab-btn" data-cat="${escapeHtml(cat)}">${escapeHtml(cat)}</button>`
+    ).join('');
+
+    tabs.querySelectorAll('.tab-btn').forEach(btn => {
+      btn.addEventListener('click', () => selectStudyCategory(btn.dataset.cat));
+    });
+
+    selectStudyCategory(state.categories[0]);
+    showScreen('study');
+  }
+
+  function selectStudyCategory(category) {
+    state.study.activeCategory = category;
+
+    document.querySelectorAll('.tab-btn').forEach(btn => {
+      btn.classList.toggle('active', btn.dataset.cat === category);
+    });
+
+    const qs = state.questions.filter(q => q.category === category);
+    document.getElementById('study-questions-list').innerHTML =
+      qs.map(q => {
+        const imgHtml = q.image
+          ? `<img src="${q.image}" class="study-img" alt="Ilustracja">`
+          : '';
+        const answers = ['A', 'B', 'C'].map(key =>
+          `<li class="${key === q.correct ? 'is-correct' : ''}">${key}. ${escapeHtml(q.answers[key])}</li>`
+        ).join('');
+        return `
+          <div class="study-card">
+            ${imgHtml}
+            <p class="q-num">${q.orig_number != null ? 'Pyt. ' + q.orig_number : 'ID ' + q.id}</p>
+            <p class="q-text">${escapeHtml(q.text)}</p>
+            <ul>${answers}</ul>
+          </div>`;
+      }).join('');
+  }
+
+  // ── Utilities ─────────────────────────────────────────────────────────────
+  function escapeHtml(str) {
+    return String(str)
+      .replace(/&/g, '&amp;')
+      .replace(/</g, '&lt;')
+      .replace(/>/g, '&gt;')
+      .replace(/"/g, '&quot;');
+  }
+
+  // ── Dark mode ─────────────────────────────────────────────────────────────
+  function applyDarkMode(on) {
+    document.body.classList.toggle('dark', on);
+    document.getElementById('toggle-dark').checked = on;
+  }
+
+  // ── Init ──────────────────────────────────────────────────────────────────
+  function showLoadingError(msg) {
+    document.getElementById('screen-loading').innerHTML =
+      `<div class="loading-content">
+        <p style="color:var(--incorrect);font-size:1.1rem;margin-bottom:0.5rem;">Błąd ładowania pytań</p>
+        <p class="text-muted">${escapeHtml(msg)}</p>
+        <p class="text-muted" style="margin-top:1rem;">
+          Uruchom przez serwer HTTP:<br><code>python3 -m http.server 8000</code>
+        </p>
+      </div>`;
+  }
+
+  async function init() {
+    // Load prefs
+    try {
+      const saved = JSON.parse(localStorage.getItem('egzaminPrefs') || '{}');
+      state.prefs = { ...state.prefs, ...saved };
+    } catch (_) {}
+    applyDarkMode(state.prefs.darkMode);
+
+    document.getElementById('toggle-dark').addEventListener('change', e => {
+      state.prefs.darkMode = e.target.checked;
+      applyDarkMode(state.prefs.darkMode);
+      localStorage.setItem('egzaminPrefs', JSON.stringify(state.prefs));
+    });
+
+    // Fetch questions
+    let resp;
+    try {
+      resp = await fetch('questions.json');
+    } catch (err) {
+      console.error('fetch error:', err);
+      showLoadingError('Nie można pobrać questions.json: ' + err.message);
+      return;
+    }
+
+    if (!resp.ok) {
+      showLoadingError('HTTP ' + resp.status + ' przy pobieraniu questions.json');
+      return;
+    }
+
+    let data;
+    try {
+      data = await resp.json();
+    } catch (err) {
+      console.error('json parse error:', err);
+      showLoadingError('Błąd parsowania questions.json: ' + err.message);
+      return;
+    }
+
+    state.questions = data.questions || [];
+    if (state.questions.length === 0) {
+      showLoadingError('questions.json nie zawiera pytań');
+      return;
+    }
+
+    state.categories = [...new Set(state.questions.map(q => q.category))].sort();
+
+    const select = document.getElementById('config-category');
+    // Clear any duplicates from double-init
+    while (select.options.length > 1) select.remove(1);
+    state.categories.forEach(cat => {
+      const opt = document.createElement('option');
+      opt.value = cat;
+      opt.textContent = cat;
+      select.appendChild(opt);
+    });
+
+    document.getElementById('home-stats').innerHTML =
+      `<div><strong>${state.questions.length}</strong> pytań</div>
+       <div><strong>${state.categories.length}</strong> kategorii</div>
+       <div><strong>${state.questions.filter(q => q.image).length}</strong> z ilustracją</div>`;
+
+    showScreen('home');
+  }
+
+  // ── Event wiring ──────────────────────────────────────────────────────────
+  function bindEvents() {
+    document.getElementById('btn-go-exam-config').addEventListener('click', () => showScreen('exam-config'));
+    document.getElementById('btn-go-study').addEventListener('click', initStudyMode);
+    document.getElementById('btn-start-exam').addEventListener('click', startExam);
+    document.getElementById('btn-back-from-config').addEventListener('click', () => showScreen('home'));
+    document.querySelectorAll('.answer-btn').forEach(btn => {
+      btn.addEventListener('click', () => handleAnswerClick(btn.dataset.key));
+    });
+    document.getElementById('btn-next-question').addEventListener('click', nextQuestion);
+    document.getElementById('btn-retry-exam').addEventListener('click', retryExam);
+    document.getElementById('btn-home-from-results').addEventListener('click', () => showScreen('home'));
+    document.getElementById('btn-back-from-study').addEventListener('click', () => showScreen('home'));
+
+    // Image zoom modal
+    document.getElementById('question-image').addEventListener('click', function() {
+      const modal = document.getElementById('img-modal');
+      document.getElementById('img-modal-img').src = this.src;
+      modal.classList.add('open');
+    });
+    document.getElementById('img-modal').addEventListener('click', function() {
+      this.classList.remove('open');
+    });
+  }
+
+  // Global error handler - shows any JS error on the loading screen
+  window.onerror = function(msg, src, line, col, err) {
+    document.getElementById('screen-loading').innerHTML =
+      '<div class="loading-content"><p style="color:red;font-size:1rem">JS ERROR line ' + line + ':<br>' + msg + '</p></div>';
+    return false;
+  };
+  window.onunhandledrejection = function(e) {
+    document.getElementById('screen-loading').innerHTML =
+      '<div class="loading-content"><p style="color:red;font-size:1rem">Promise ERROR:<br>' + e.reason + '</p></div>';
+  };
+
+  bindEvents();
+  init();
+</script>
+
+</body>
+</html>

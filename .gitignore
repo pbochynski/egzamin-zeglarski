@@ -1,0 +1,6 @@
+*.pdf
+checkpoint.json
+docs/
+test-fetch.html
+test2.html
+.DS_Store
