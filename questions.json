@@ -5184,7 +5184,7 @@
         "B": "Nie, bo siła aerodynamiczna jest skierowana w kierunku ruchu jachtu",
         "C": "Podniesienie miecza nie ma wpływu na dryf jachtu niezależnie od kursu wzgl. wiatru"
       },
-      "correct": "B",
+      "correct": "A",
       "image": null
     },
     {
@@ -5249,7 +5249,7 @@
         "B": "Baksztagiem lewego halsu",
         "C": "Półwiatrem prawego halsu"
       },
-      "correct": "C",
+      "correct": "A",
       "image": "images/q_404.jpg"
     },
     {
@@ -5262,7 +5262,7 @@
         "B": "Fordewindem lewego halsu",
         "C": "Fordewindem prawego halsu"
       },
-      "correct": "C",
+      "correct": "B",
       "image": "images/q_405.jpg"
     },
     {
@@ -5626,7 +5626,7 @@
         "B": "Baksztagiem",
         "C": "Półwiatrem"
       },
-      "correct": "A",
+      "correct": "B",
       "image": "images/q_433.jpg"
     },
     {
@@ -5730,7 +5730,7 @@
         "B": "Osiąga wartość minimalną.",
         "C": "Osiąga wartość maksymalną."
       },
-      "correct": "B",
+      "correct": "C",
       "image": null
     },
     {
