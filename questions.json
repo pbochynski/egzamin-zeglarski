@@ -75,7 +75,7 @@
         "B": "Raks",
         "C": "Pełzaczy"
       },
-      "correct": "C",
+      "correct": "B",
       "image": null
     },
     {
@@ -764,7 +764,7 @@
         "B": "Achterszag",
         "C": "Wanta"
       },
-      "correct": "B",
+      "correct": "A",
       "image": "images/q_59.jpg"
     },
     {
