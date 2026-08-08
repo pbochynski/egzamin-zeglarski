@@ -3663,7 +3663,7 @@
         "B": "Małemu statkowi o napędzie mechanicznym,",
         "C": "Wodolotowi płynącemu z duża prędkością."
       },
-      "correct": "C",
+      "correct": "A",
       "image": null
     },
     {
@@ -3715,7 +3715,7 @@
         "B": "Od strony flagi czerwonej",
         "C": "Od strony flagi czerwono-białej"
       },
-      "correct": "A",
+      "correct": "C",
       "image": "images/q_299.jpg"
     },
     {
@@ -3780,7 +3780,7 @@
         "B": "Ustąpić temu statkowi mijając go w bezpiecznej odległości",
         "C": "To statek łowiący okrężnicą ominąć go w znacznej odległości"
       },
-      "correct": "C",
+      "correct": "B",
       "image": "images/q_304.jpg"
     },
     {
@@ -3806,7 +3806,7 @@
         "B": "Minąć go daleko przed dziobem",
         "C": "Minąć go z dowolnej strony w bezpiecznej odległości."
       },
-      "correct": "B",
+      "correct": "C",
       "image": "images/q_306.jpg"
     },
     {
@@ -3923,7 +3923,7 @@
         "B": "Mam zamiar wyprzedzić was po waszej lewej burcie, utrzymać kurs",
         "C": "Mam zamiar zawrócić w lewo, obserwować ruchy statku"
       },
-      "correct": "B",
+      "correct": "A",
       "image": "images/q_315.jpg"
     },
     {
@@ -3962,7 +3962,7 @@
         "B": "Dwie czarne kule",
         "C": "Czarny stożek"
       },
-      "correct": "A",
+      "correct": "B",
       "image": null
     },
     {
