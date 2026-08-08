@@ -290,10 +290,6 @@
       font-weight: 500;
     }
 
-    #btn-next-question {
-      display: none;
-      margin-top: 1rem;
-    }
 
     /* ── Results screen ── */
     .score-circle {
@@ -418,6 +414,12 @@
     @keyframes spin { to { transform: rotate(360deg); } }
 
     /* ── Utility ── */
+    .nav-row {
+      display: flex;
+      gap: 0.75rem;
+      margin-top: 1rem;
+    }
+    .nav-row .btn { flex: 1; }
     .mt-1 { margin-top: 0.75rem; }
     .text-muted { color: var(--text-muted); font-size: 0.875rem; }
     .divider { border: none; border-top: 1px solid var(--border); margin: 1.25rem 0; }
@@ -518,7 +520,10 @@
         <button class="answer-btn" data-key="C"></button>
       </div>
 
-      <button class="btn btn-primary btn-block" id="btn-next-question">Następne pytanie →</button>
+      <div class="nav-row">
+        <button class="btn btn-secondary" id="btn-prev-question">← Poprzednie</button>
+        <button class="btn btn-primary" id="btn-next-question">Następne →</button>
+      </div>
     </div>
   </div>
 </div>
@@ -571,7 +576,6 @@
       currentIndex: 0,
       answers: {},
       feedbackMode: 'immediate',
-      answered: false,
       config: null,
     },
     study: {
@@ -622,7 +626,6 @@
       currentIndex: 0,
       answers: {},
       feedbackMode,
-      answered: false,
       config: { count, category, feedbackMode },
     };
 
@@ -633,7 +636,10 @@
   function renderQuestion() {
     const { exam } = state;
     const q = exam.questions[exam.currentIndex];
-    exam.answered = false;
+    const isLast = exam.currentIndex === exam.questions.length - 1;
+    const isFirst = exam.currentIndex === 0;
+    const savedAnswer = exam.answers[q.id];
+    const isAnswered = savedAnswer != null;
 
     // Progress
     const pct = (exam.currentIndex / exam.questions.length) * 100;
@@ -661,7 +667,7 @@
     // Question text
     document.getElementById('question-text').textContent = q.text;
 
-    // Answer buttons — reset
+    // Answer buttons
     document.querySelectorAll('.answer-btn').forEach(btn => {
       const key = btn.dataset.key;
       btn.textContent = `${key}.  ${q.answers[key]}`;
@@ -669,44 +675,67 @@
       btn.disabled = false;
     });
 
+    if (isAnswered) {
+      if (exam.feedbackMode === 'immediate') {
+        // Lock and show correct/incorrect
+        document.querySelectorAll('.answer-btn').forEach(btn => {
+          const key = btn.dataset.key;
+          btn.disabled = true;
+          if (key === q.correct) {
+            btn.classList.add('correct');
+          } else if (key === savedAnswer && savedAnswer !== q.correct) {
+            btn.classList.add('incorrect');
+          }
+        });
+      } else {
+        // Show selection, allow change
+        document.querySelectorAll('.answer-btn').forEach(btn => {
+          if (btn.dataset.key === savedAnswer) btn.classList.add('selected-neutral');
+        });
+      }
+    }
+
+    // Navigation buttons
+    const prevBtn = document.getElementById('btn-prev-question');
     const nextBtn = document.getElementById('btn-next-question');
-    nextBtn.style.display = 'none';
-    nextBtn.textContent = exam.currentIndex === exam.questions.length - 1
-      ? 'Pokaż wyniki'
-      : 'Następne pytanie →';
+    prevBtn.disabled = isFirst;
+    prevBtn.style.visibility = isFirst ? 'hidden' : 'visible';
+    nextBtn.textContent = isLast ? 'Pokaż wyniki' : 'Następne →';
+    // In immediate mode, next is only enabled after answering (unless going back to answered question)
+    if (exam.feedbackMode === 'immediate' && !isAnswered) {
+      nextBtn.disabled = true;
+    } else {
+      nextBtn.disabled = false;
+    }
   }
 
   function handleAnswerClick(selectedKey) {
     const { exam } = state;
-    if (exam.answered) return;
-
     const q = exam.questions[exam.currentIndex];
-    exam.answered = true;
+
+    // In immediate mode, ignore clicks after answer is locked
+    if (exam.feedbackMode === 'immediate' && exam.answers[q.id] != null) return;
+
     exam.answers[q.id] = selectedKey;
 
-    // Disable all buttons
-    document.querySelectorAll('.answer-btn').forEach(btn => {
-      btn.disabled = true;
-    });
-
     if (exam.feedbackMode === 'immediate') {
-      // Color: correct = green, selected-wrong = red, others = dim
       document.querySelectorAll('.answer-btn').forEach(btn => {
         const key = btn.dataset.key;
+        btn.disabled = true;
+        btn.className = 'answer-btn';
         if (key === q.correct) {
           btn.classList.add('correct');
         } else if (key === selectedKey && selectedKey !== q.correct) {
           btn.classList.add('incorrect');
         }
       });
+      document.getElementById('btn-next-question').disabled = false;
     } else {
-      // Just mark selected with neutral highlight
       document.querySelectorAll('.answer-btn').forEach(btn => {
+        btn.className = 'answer-btn';
         if (btn.dataset.key === selectedKey) btn.classList.add('selected-neutral');
       });
     }
-
-    document.getElementById('btn-next-question').style.display = 'block';
   }
 
   function nextQuestion() {
@@ -716,6 +745,14 @@
       renderQuestion();
     } else {
       showResults();
+    }
+  }
+
+  function prevQuestion() {
+    const { exam } = state;
+    if (exam.currentIndex > 0) {
+      exam.currentIndex--;
+      renderQuestion();
     }
   }
 
@@ -939,7 +976,6 @@
         currentIndex: 0,
         answers: {},
         feedbackMode,
-        answered: false,
         config: { count: pool.length, category: cat, feedbackMode },
       };
       showScreen('question');
@@ -950,6 +986,7 @@
       btn.addEventListener('click', () => handleAnswerClick(btn.dataset.key));
     });
     document.getElementById('btn-next-question').addEventListener('click', nextQuestion);
+    document.getElementById('btn-prev-question').addEventListener('click', prevQuestion);
     document.getElementById('btn-retry-exam').addEventListener('click', retryExam);
     document.getElementById('btn-home-from-results').addEventListener('click', () => showScreen('home'));
     document.getElementById('btn-back-from-study').addEventListener('click', () => showScreen('home'));
