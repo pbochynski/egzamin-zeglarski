@@ -3442,7 +3442,7 @@
         "B": "Ustąpić z drogi",
         "C": "Zmniejszyć szybkość"
       },
-      "correct": "B",
+      "correct": "A",
       "image": null
     },
     {
@@ -3455,7 +3455,7 @@
         "B": "Zmienić swój kurs w prawo",
         "C": "Zatrzymać się i rzucić kotwicę"
       },
-      "correct": "B",
+      "correct": "A",
       "image": null
     },
     {
@@ -3624,7 +3624,7 @@
         "B": "Ustąpić, najlepiej przejść za rufą",
         "C": "Zatrzymać się, nawiązać łączność i upewnić się czy ten statek potrzebuje pomocy"
       },
-      "correct": "C",
+      "correct": "B",
       "image": "images/q_292.jpg"
     },
     {
