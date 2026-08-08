@@ -472,6 +472,7 @@
         <select id="config-category">
           <option value="all">Wszystkie kategorie</option>
         </select>
+        <button class="btn btn-secondary btn-block" id="btn-all-in-category" style="display:none;margin-top:0.5rem;"></button>
       </div>
 
       <div class="form-group">
@@ -912,6 +913,38 @@
     document.getElementById('btn-go-exam-config').addEventListener('click', () => showScreen('exam-config'));
     document.getElementById('btn-go-study').addEventListener('click', initStudyMode);
     document.getElementById('btn-start-exam').addEventListener('click', startExam);
+
+    const categorySelect = document.getElementById('config-category');
+    const btnAllInCategory = document.getElementById('btn-all-in-category');
+
+    function updateAllInCategoryBtn() {
+      const cat = categorySelect.value;
+      if (cat === 'all') {
+        btnAllInCategory.style.display = 'none';
+      } else {
+        const n = state.questions.filter(q => q.category === cat).length;
+        btnAllInCategory.textContent = `Wszystkie pytania z tej kategorii (${n})`;
+        btnAllInCategory.style.display = 'block';
+      }
+    }
+
+    categorySelect.addEventListener('change', updateAllInCategoryBtn);
+
+    btnAllInCategory.addEventListener('click', () => {
+      const cat = categorySelect.value;
+      const pool = state.questions.filter(q => q.category === cat);
+      const feedbackMode = document.querySelector('input[name="feedback-mode"]:checked').value;
+      state.exam = {
+        questions: shuffle(pool),
+        currentIndex: 0,
+        answers: {},
+        feedbackMode,
+        answered: false,
+        config: { count: pool.length, category: cat, feedbackMode },
+      };
+      showScreen('question');
+      renderQuestion();
+    });
     document.getElementById('btn-back-from-config').addEventListener('click', () => showScreen('home'));
     document.querySelectorAll('.answer-btn').forEach(btn => {
       btn.addEventListener('click', () => handleAnswerClick(btn.dataset.key));
