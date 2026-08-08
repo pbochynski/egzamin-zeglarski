@@ -781,7 +781,7 @@
     const total = exam.questions.length;
     const correct = exam.questions.filter(q => exam.answers[q.id] === q.correct).length;
     const pct = Math.round((correct / total) * 100);
-    const passed = pct >= 75;
+    const passed = pct >= 87;
 
     document.getElementById('score-number').textContent = `${correct}/${total}`;
     document.getElementById('score-number').className = `score-number ${passed ? 'score-pass' : 'score-fail'}`;
