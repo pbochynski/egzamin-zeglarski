@@ -420,6 +420,14 @@
       margin-top: 1rem;
     }
     .nav-row .btn { flex: 1; }
+    .report-link {
+      display: block;
+      text-align: center;
+      margin-top: 0.75rem;
+      font-size: 0.8rem;
+      color: var(--text-muted);
+    }
+    .report-link:hover { color: var(--incorrect); }
     .mt-1 { margin-top: 0.75rem; }
     .text-muted { color: var(--text-muted); font-size: 0.875rem; }
     .divider { border: none; border-top: 1px solid var(--border); margin: 1.25rem 0; }
@@ -524,6 +532,7 @@
         <button class="btn btn-secondary" id="btn-prev-question">← Poprzednie</button>
         <button class="btn btn-primary" id="btn-next-question">Następne →</button>
       </div>
+      <a id="btn-report-error" href="#" target="_blank" rel="noopener" class="report-link">Zgłoś błąd w pytaniu</a>
     </div>
   </div>
 </div>
@@ -707,6 +716,17 @@
     } else {
       nextBtn.disabled = false;
     }
+
+    // Report error link
+    const title = encodeURIComponent(`Błąd w pytaniu: ${q.category} · pyt. ${q.orig_number ?? q.id}`);
+    const body = encodeURIComponent(
+      `**Kategoria:** ${q.category}\n` +
+      `**Numer pytania:** ${q.orig_number ?? q.id}\n` +
+      `**Treść:** ${q.text}\n\n` +
+      `**Opisz błąd:**\n\n`
+    );
+    document.getElementById('btn-report-error').href =
+      `https://github.com/pbochynski/egzamin-zeglarski/issues/new?title=${title}&body=${body}`;
   }
 
   function handleAnswerClick(selectedKey) {
@@ -844,12 +864,21 @@
         const answers = ['A', 'B', 'C'].map(key =>
           `<li class="${key === q.correct ? 'is-correct' : ''}">${key}. ${escapeHtml(q.answers[key])}</li>`
         ).join('');
+        const reportTitle = encodeURIComponent(`Błąd w pytaniu: ${q.category} · pyt. ${q.orig_number ?? q.id}`);
+        const reportBody = encodeURIComponent(
+          `**Kategoria:** ${q.category}\n` +
+          `**Numer pytania:** ${q.orig_number ?? q.id}\n` +
+          `**Treść:** ${q.text}\n\n` +
+          `**Opisz błąd:**\n\n`
+        );
+        const reportHref = `https://github.com/pbochynski/egzamin-zeglarski/issues/new?title=${reportTitle}&body=${reportBody}`;
         return `
           <div class="study-card">
             ${imgHtml}
             <p class="q-num">${q.orig_number != null ? 'Pyt. ' + q.orig_number : 'ID ' + q.id}</p>
             <p class="q-text">${escapeHtml(q.text)}</p>
             <ul>${answers}</ul>
+            <a href="${reportHref}" target="_blank" rel="noopener" class="report-link">Zgłoś błąd w pytaniu</a>
           </div>`;
       }).join('');
   }
