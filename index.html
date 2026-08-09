@@ -4,6 +4,7 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Egzamin Żeglarski</title>
+  <script src="https://cdn.jsdelivr.net/npm/@emailjs/browser@4/dist/email.min.js"></script>
   <style>
     /* ── CSS custom properties ── */
     :root {
@@ -428,6 +429,50 @@
       color: var(--text-muted);
     }
     .report-link:hover { color: var(--incorrect); }
+
+    /* Report modal */
+    #report-modal {
+      display: none;
+      position: fixed;
+      inset: 0;
+      background: rgba(0,0,0,0.6);
+      z-index: 1000;
+      align-items: center;
+      justify-content: center;
+      padding: 1rem;
+    }
+    #report-modal.open { display: flex; }
+    #report-modal .modal-box {
+      background: var(--bg-card);
+      border: 1px solid var(--border);
+      border-radius: 12px;
+      padding: 1.5rem;
+      width: 100%;
+      max-width: 480px;
+      box-shadow: var(--shadow);
+    }
+    #report-modal h3 { margin-bottom: 0.25rem; }
+    #report-modal .modal-meta {
+      font-size: 0.8rem;
+      color: var(--text-muted);
+      margin-bottom: 1rem;
+    }
+    #report-description {
+      width: 100%;
+      min-height: 100px;
+      padding: 0.6rem 0.75rem;
+      border: 1px solid var(--border);
+      border-radius: 8px;
+      background: var(--bg-card);
+      color: var(--text);
+      font-size: 0.95rem;
+      font-family: inherit;
+      resize: vertical;
+      margin-bottom: 1rem;
+    }
+    #report-description:focus { outline: 2px solid var(--accent); border-color: transparent; }
+    .modal-actions { display: flex; gap: 0.75rem; }
+    .modal-actions .btn { flex: 1; }
     .mt-1 { margin-top: 0.75rem; }
     .text-muted { color: var(--text-muted); font-size: 0.875rem; }
     .divider { border: none; border-top: 1px solid var(--border); margin: 1.25rem 0; }
@@ -532,7 +577,7 @@
         <button class="btn btn-secondary" id="btn-prev-question">← Poprzednie</button>
         <button class="btn btn-primary" id="btn-next-question">Następne →</button>
       </div>
-      <a id="btn-report-error" href="#" target="_blank" rel="noopener" class="report-link">Zgłoś błąd w pytaniu</a>
+      <a id="btn-report-error" href="#" class="report-link">Zgłoś błąd w pytaniu</a>
     </div>
   </div>
 </div>
@@ -568,6 +613,18 @@
 
     <div id="study-category-tabs" class="category-tabs"></div>
     <div id="study-questions-list"></div>
+  </div>
+</div>
+
+<div id="report-modal">
+  <div class="modal-box">
+    <h3>Zgłoś błąd w pytaniu</h3>
+    <p id="report-modal-meta" class="modal-meta"></p>
+    <textarea id="report-description" placeholder="Opisz błąd..."></textarea>
+    <div class="modal-actions">
+      <button class="btn btn-secondary" id="btn-report-cancel">Anuluj</button>
+      <button class="btn btn-primary" id="btn-report-send">Wyślij</button>
+    </div>
   </div>
 </div>
 
@@ -717,16 +774,10 @@
       nextBtn.disabled = false;
     }
 
-    // Report error link
-    const title = encodeURIComponent(`Błąd w pytaniu: ${q.category} · pyt. ${q.orig_number ?? q.id}`);
-    const body = encodeURIComponent(
-      `**Kategoria:** ${q.category}\n` +
-      `**Numer pytania:** ${q.orig_number ?? q.id}\n` +
-      `**Treść:** ${q.text}\n\n` +
-      `**Opisz błąd:**\n\n`
-    );
-    document.getElementById('btn-report-error').href =
-      `https://github.com/pbochynski/egzamin-zeglarski/issues/new?title=${title}&body=${body}`;
+    // Report error link — stores question ref on the element, modal reads it
+    const reportBtn = document.getElementById('btn-report-error');
+    reportBtn.dataset.questionId = q.id;
+    reportBtn.onclick = (e) => { e.preventDefault(); openReportModal(q); };
   }
 
   function handleAnswerClick(selectedKey) {
@@ -864,21 +915,13 @@
         const answers = ['A', 'B', 'C'].map(key =>
           `<li class="${key === q.correct ? 'is-correct' : ''}">${key}. ${escapeHtml(q.answers[key])}</li>`
         ).join('');
-        const reportTitle = encodeURIComponent(`Błąd w pytaniu: ${q.category} · pyt. ${q.orig_number ?? q.id}`);
-        const reportBody = encodeURIComponent(
-          `**Kategoria:** ${q.category}\n` +
-          `**Numer pytania:** ${q.orig_number ?? q.id}\n` +
-          `**Treść:** ${q.text}\n\n` +
-          `**Opisz błąd:**\n\n`
-        );
-        const reportHref = `https://github.com/pbochynski/egzamin-zeglarski/issues/new?title=${reportTitle}&body=${reportBody}`;
         return `
           <div class="study-card">
             ${imgHtml}
             <p class="q-num">${q.orig_number != null ? 'Pyt. ' + q.orig_number : 'ID ' + q.id}</p>
             <p class="q-text">${escapeHtml(q.text)}</p>
             <ul>${answers}</ul>
-            <a href="${reportHref}" target="_blank" rel="noopener" class="report-link">Zgłoś błąd w pytaniu</a>
+            <a href="#" class="report-link" data-question-id="${q.id}">Zgłoś błąd w pytaniu</a>
           </div>`;
       }).join('');
   }
@@ -975,6 +1018,51 @@
   }
 
   // ── Event wiring ──────────────────────────────────────────────────────────
+  // ── EmailJS ───────────────────────────────────────────────────────────────
+  emailjs.init('Qd1O4IQYT1eGF7d0F');
+
+  let reportQuestion = null;
+
+  function openReportModal(q) {
+    reportQuestion = q;
+    document.getElementById('report-modal-meta').textContent =
+      `${q.category} · pyt. ${q.orig_number ?? q.id}: ${q.text}`;
+    document.getElementById('report-description').value = '';
+    document.getElementById('btn-report-send').textContent = 'Wyślij';
+    document.getElementById('btn-report-send').disabled = false;
+    document.getElementById('report-modal').classList.add('open');
+  }
+
+  function closeReportModal() {
+    document.getElementById('report-modal').classList.remove('open');
+    reportQuestion = null;
+  }
+
+  function sendReport() {
+    if (!reportQuestion) return;
+    const description = document.getElementById('report-description').value.trim();
+    if (!description) {
+      document.getElementById('report-description').focus();
+      return;
+    }
+    const sendBtn = document.getElementById('btn-report-send');
+    sendBtn.textContent = 'Wysyłanie...';
+    sendBtn.disabled = true;
+
+    emailjs.send('service_03qdgh4', 'template_cvd8o1d', {
+      question_category: reportQuestion.category,
+      question_number: reportQuestion.orig_number ?? reportQuestion.id,
+      question_text: reportQuestion.text,
+      error_description: description,
+    }).then(() => {
+      sendBtn.textContent = 'Wysłano!';
+      setTimeout(closeReportModal, 1200);
+    }).catch(() => {
+      sendBtn.textContent = 'Błąd — spróbuj ponownie';
+      sendBtn.disabled = false;
+    });
+  }
+
   function bindEvents() {
     document.getElementById('btn-go-exam-config').addEventListener('click', () => showScreen('exam-config'));
     document.getElementById('btn-go-study').addEventListener('click', initStudyMode);
@@ -1019,6 +1107,23 @@
     document.getElementById('btn-retry-exam').addEventListener('click', retryExam);
     document.getElementById('btn-home-from-results').addEventListener('click', () => showScreen('home'));
     document.getElementById('btn-back-from-study').addEventListener('click', () => showScreen('home'));
+
+    // Report modal buttons
+    document.getElementById('btn-report-cancel').addEventListener('click', closeReportModal);
+    document.getElementById('btn-report-send').addEventListener('click', sendReport);
+    document.getElementById('report-modal').addEventListener('click', function(e) {
+      if (e.target === this) closeReportModal();
+    });
+
+    // Delegacja kliknięć "Zgłoś błąd" w trybie nauki
+    document.getElementById('study-questions-list').addEventListener('click', function(e) {
+      const link = e.target.closest('.report-link');
+      if (!link) return;
+      e.preventDefault();
+      const qId = parseInt(link.dataset.questionId, 10);
+      const q = state.questions.find(q => q.id === qId);
+      if (q) openReportModal(q);
+    });
 
     // Image zoom modal
     document.getElementById('question-image').addEventListener('click', function() {
