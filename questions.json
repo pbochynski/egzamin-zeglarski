@@ -1193,7 +1193,7 @@
         "B": "Fok lewo na wiatr, ster lewo",
         "C": "Grot i fok w łopocie, ster prawo"
       },
-      "correct": "A",
+      "correct": "B",
       "image": null
     },
     {
@@ -4820,7 +4820,7 @@
         "B": "Zluzować nieco żagle nie zmieniając kursu, połączyć i skręcić ściągacz i zabezpieczyć go",
         "C": "Wykonać zwrot przez sztag, zrzucić żagle, jak najszybciej założyć awaryjną wantę"
       },
-      "correct": "A",
+      "correct": "B",
       "image": null
     },
     {
