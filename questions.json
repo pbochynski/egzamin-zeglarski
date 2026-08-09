@@ -1219,7 +1219,7 @@
         "B": "Rufa będzie odrzucana w lewo",
         "C": "Jacht ruszy wstecz bez zmiany kierunku"
       },
-      "correct": "A",
+      "correct": "B",
       "image": null
     },
     {
@@ -3546,7 +3546,7 @@
         "B": "Minąć go daleko przed dziobem",
         "C": "Minąć go z dowolnej strony w bezpiecznej odległości."
       },
-      "correct": "A",
+      "correct": "C",
       "image": "images/q_286.jpg"
     },
     {
