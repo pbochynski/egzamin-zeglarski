@@ -1648,7 +1648,7 @@
         "B": "Stopniowe luzowanie szota",
         "C": "Luzowanie do momentu wejścia żagla w łopot"
       },
-      "correct": "C",
+      "correct": "A",
       "image": null
     },
     {
@@ -4924,7 +4924,7 @@
         "B": "Utrzymywał kurs i mocno hamował",
         "C": "Skręcał w prawo i hamował"
       },
-      "correct": "A",
+      "correct": "C",
       "image": null
     },
     {
