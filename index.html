@@ -476,6 +476,21 @@
     .mt-1 { margin-top: 0.75rem; }
     .text-muted { color: var(--text-muted); font-size: 0.875rem; }
     .divider { border: none; border-top: 1px solid var(--border); margin: 1.25rem 0; }
+    /* ── Home footer info ── */
+    .home-info {
+      margin-top: 1.25rem;
+      text-align: center;
+      font-size: 0.82rem;
+      color: var(--text-muted);
+      line-height: 1.6;
+    }
+    .home-info a {
+      color: var(--accent);
+      text-decoration: none;
+    }
+    .home-info a:hover {
+      text-decoration: underline;
+    }
   </style>
 </head>
 <body>
@@ -509,10 +524,16 @@
         </label>
       </div>
     </div>
+    <p class="home-info">
+      Zauważyłeś błąd w pytaniu lub odpowiedzi? Skorzystaj z przycisku
+      <strong>„Zgłoś błąd w pytaniu"</strong> widocznego przy każdym pytaniu
+      podczas nauki lub egzaminu. Błędy poprawiane są na bieżąco.
+    </p>
+    <p class="home-info" id="build-date-line" style="margin-top:0.5rem;">
+      Ostatnia aktualizacja: <span id="build-date"><!-- BUILD_DATE --></span>
+    </p>
   </div>
 </div>
-
-<!-- Exam config -->
 <div id="screen-exam-config" class="screen">
   <div class="container">
     <h2>Konfiguracja egzaminu</h2>
