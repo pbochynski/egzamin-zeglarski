@@ -99,7 +99,7 @@ PDFy muszą być w tym samym katalogu co convert.py.
 
 ## GitHub Pages
 
-Po pushu do main włącz Pages: Settings → Pages → Source: main, folder /.
+Po pushu do main włącz Pages: Settings → Pages → Source: GitHub Actions.
 URL: https://pbochynski.github.io/egzamin-zeglarski/
 
 ## Lokalny serwer (testowanie)
