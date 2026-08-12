@@ -471,6 +471,33 @@
       margin-bottom: 1rem;
     }
     #report-description:focus { outline: 2px solid var(--accent); border-color: transparent; }
+    .form-field { margin-bottom: 0.75rem; }
+    .field-label { display: block; font-size: 0.875rem; color: var(--text-muted); margin-bottom: 0.35rem; }
+    #report-contact {
+      width: 100%;
+      padding: 0.6rem 0.75rem;
+      border: 1px solid var(--border);
+      border-radius: 8px;
+      background: var(--bg-card);
+      color: var(--text);
+      font-size: 0.95rem;
+      font-family: inherit;
+      box-sizing: border-box;
+    }
+    #report-contact:focus { outline: 2px solid var(--accent); border-color: transparent; }
+    #report-contact:disabled { opacity: 0.45; cursor: not-allowed; }
+    .field-error { display: none; color: var(--incorrect); font-size: 0.8rem; margin-top: 0.3rem; }
+    .field-error.visible { display: block; }
+    .field-hint { font-size: 0.8rem; color: var(--text-muted); margin: 0.3rem 0 0; }
+    .checkbox-label {
+      display: flex;
+      align-items: center;
+      gap: 0.5rem;
+      font-size: 0.875rem;
+      color: var(--text-muted);
+      margin-bottom: 1rem;
+      cursor: pointer;
+    }
     .modal-actions { display: flex; gap: 0.75rem; }
     .modal-actions .btn { flex: 1; }
     .mt-1 { margin-top: 0.75rem; }
@@ -642,6 +669,16 @@
     <h3>Zgłoś błąd w pytaniu</h3>
     <p id="report-modal-meta" class="modal-meta"></p>
     <textarea id="report-description" placeholder="Opisz błąd..."></textarea>
+    <div class="form-field">
+      <label for="report-contact" class="field-label">Twoje dane (imię i/lub email)</label>
+      <input type="text" id="report-contact" placeholder="np. Jan Kowalski, jan@example.com">
+      <span id="report-contact-error" class="field-error">Podaj dane kontaktowe lub zaznacz opcję anonimowego zgłoszenia.</span>
+      <p class="field-hint">Zostaw kontakt, jeśli chcesz dostać informację zwrotną o zgłoszeniu.</p>
+    </div>
+    <label class="checkbox-label">
+      <input type="checkbox" id="report-anonymous">
+      Wyślij anonimowo (nie otrzymasz informacji zwrotnej)
+    </label>
     <div class="modal-actions">
       <button class="btn btn-secondary" id="btn-report-cancel">Anuluj</button>
       <button class="btn btn-primary" id="btn-report-send">Wyślij</button>
